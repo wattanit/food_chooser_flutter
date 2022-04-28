@@ -1,10 +1,50 @@
+import 'dart:core';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'listView.dart';
 
-class MainViewWidget extends StatelessWidget {
+class Place{
+  String id;
+  String name;
+  String description;
+  String location;
+  List<String> history = [];
+
+  Place(this.id , this.name, this.description, this.location);
+}
+
+class History{
+  String placeId;
+  String name;
+  String time;
+
+  History(this.placeId, this.name, this.time);
+}
+
+class MainViewWidget extends StatefulWidget {
   const MainViewWidget({Key? key}) : super(key: key);
+
+  @override
+  State<MainViewWidget> createState() => _MainViewWidgetState();
+}
+
+class _MainViewWidgetState extends State<MainViewWidget> {
+  //DateTime.now().microsecondsSinceEpoch.toString()
+  List<Place> places = <Place>[
+    Place("1", "Instant Food", "Place A", "Here"),
+    Place("2", "Noodles", "Place B", "There"),
+    Place("3", "Italian Pizza Place", "Place C", "Anywhere"),
+    Place("4", "Fried Chicken", "Place D", "Everywhere")
+  ];
+
+  List<History> history = <History>[
+    History("4", "Fried Chicken", "08/03/2022 12:31"),
+    History("3", "Italian Pizza Place", "06/03/2022 13:11"),
+    History("2", "Noodles", "04/02/2022 12:43"),
+    History("1", "Instant Food", "24/01/2022 13:52")
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +54,14 @@ class MainViewWidget extends StatelessWidget {
       // ),
       child: ListView(
         padding: const EdgeInsets.all(8),
-        children: const <Widget>[
-          TopBar(),
-          RollButton(),
-          Text("History", style: TextStyle(
-            color: CupertinoColors.systemGrey
+        children: <Widget>[
+          TopBar(places: places),
+          const RollButton(),
+          const Text("History", style: TextStyle(
+              color: CupertinoColors.systemGrey
           )),
-          Divider(),
-          HistoryList(),
+          const Divider(),
+          HistoryList(history: history),
           // HistoryList()
         ],
       ),
@@ -30,7 +70,12 @@ class MainViewWidget extends StatelessWidget {
 }
 
 class TopBar extends StatelessWidget {
-  const TopBar({Key? key}) : super(key: key);
+  const TopBar({
+    Key? key,
+    required this.places
+  }) : super(key: key);
+
+  final List<Place> places;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +89,9 @@ class TopBar extends StatelessWidget {
             onPressed: (){
               Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (context)=> const ListViewWidget())
+                  CupertinoPageRoute(builder: (context)=> ListViewWidget(
+                    places: places
+                  ))
               );
             }
         ),
@@ -52,7 +99,6 @@ class TopBar extends StatelessWidget {
     );
   }
 }
-
 
 class RollButton extends StatelessWidget {
   const RollButton({Key? key}) : super(key: key);
@@ -100,43 +146,29 @@ class ButtonPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
-class HistoryList extends StatefulWidget {
-  const HistoryList({Key? key}) : super(key: key);
+class HistoryList extends StatelessWidget {
+  const HistoryList({
+    Key? key,
+    required this.history
+  }) : super(key: key);
 
-  @override
-  State<HistoryList> createState() => _HistoryListState();
-}
+  final List<History> history;
 
-class _HistoryListState extends State<HistoryList> {
   @override
   Widget build(BuildContext context) {
-    final List<String> placeHistory = <String>[
-      "Fried Chicken",
-      "Italian Pizza Place",
-      "Noodles",
-      "Instant Food"
-    ];
-
-    final List<String> placeDateTime = <String>[
-      "08/03/2022 12:30",
-      "06/03/2022 13:11",
-      "04/02/2022 12:43",
-      "24/01/2022 13:52"
-    ];
-
     return ListView.builder(
         shrinkWrap: true,
-        itemCount: placeHistory.length,
+        itemCount: history.length,
         itemBuilder: (BuildContext context, int idx){
           return SizedBox(
             height: 50,
             child: Row(
               children: <Widget>[
                 Expanded(
-                    child: Text(placeHistory[idx])
+                  child: Text(history[idx].name),
                 ),
-                Text(placeDateTime[idx], style: const TextStyle(
-                  color: CupertinoColors.systemGrey
+                Text(history[idx].time, style: const TextStyle(
+                    color: CupertinoColors.systemGrey
                 ))
               ],
             ),
