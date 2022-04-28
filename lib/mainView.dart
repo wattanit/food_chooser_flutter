@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'listView.dart';
+
 class MainViewWidget extends StatelessWidget {
   const MainViewWidget({Key? key}) : super(key: key);
 
@@ -32,11 +34,19 @@ class TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
-      height: 60.0,
+    return SizedBox(
+      height: 80.0,
       child: Center(
-        child: Icon(
-            Icons.menu
+        child: CupertinoButton(
+            child: const Icon(
+              Icons.menu,
+            ),
+            onPressed: (){
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context)=> const ListViewWidget())
+              );
+            }
         ),
       ),
     );
@@ -51,7 +61,7 @@ class RollButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: const Alignment(0.0, 0.0),
-      height: 400.0,
+      height: 350.0,
       child: CustomPaint(
         painter: ButtonPainter(),
       ),
